@@ -1,0 +1,54 @@
+Where Memory Belongs: LEDGER, an Object Ledger for Memory-Augmented VLAs
+记忆的编排的论文，https://arxiv.org/pdf/2609.34554，中途新物体不入库。论文把 回合中的dynamic object discovery 列为 future work。
+UniIntervene
+https://denghaoyuan123.github.io/UniIntervene-project/
+已发表在CoRL。
+将在线RL的人接管，改为训练了一个接管器来接管。将 HiL–RL 中的在线干预问题建模为一个以未来为条件的价值-风险决策问题。评判器是其核心，可根据动作条件化未来价值的动态变化。当评判器检测到价值长期不变或下降，激活基于记忆引导的目标条件恢复策略（恢复策略本质是一种目标条件的BC策略）
+TurboVLA
+https://github.com/H-EmbodVis/TurboVLA
+现状
+Libero, robotwin，评测较少。论文有arxiv，未发表
+框架
+DINOv3 + 冻结 BERT token + GroundingDINO 初始化的 6 层双向 cross-attn + 3 层 ACT，语言不再生成、只当条件
+
+
+Evolve-vla
+TTT, 里程碑隔一段打标采样，渐进式horizon延伸以提供密集reward。引入任务进度估计器。
+Agentic-vla
+对于每个task进行适应
+ARS
+Adaptive reward synthesis 适应性奖励合成
+子目标拆分subgoal。
+训练过程，哪个子目标卡住拉高哪个子目标权重。
+若已经掌握则降低权重让学习焦点后移。
+LGE
+语言引导探索，该过程受agent水平影响很大。
+ExperienceMeomory
+存适应后的权重，和任务语义embedding。使用时使用对应权重与原始权重进行平均。
+为什么权重平均可行？
+1.不同任务的权重都是从同一个openvla的OFT适应而来
+2.任务的适应仅在局部更新
+3.检索的相似条件十分“尖锐”，只会去很相关的任务。
+4.加权结果仅为warm start，还要进行后训练。
+有什么问题
+有些语义看似相近但实际操作相差很大的任务。被认定为相似任务。
+Evo-vla
+自监督长时程学习
+选择性注意力与门控融合机制的 
+上下文选择性长时程记忆机制
+外加建了一个数据集
+VLA中的Transformer扰动检测
+https://arxiv.org/pdf/2606.20754
+论文针对视觉-语言-动作（Vision-Language-Action, VLA）模型在机器人操作任务中缺乏可靠不确定性量化的问题，提出了一种新颖的、无需标签且模型无关（Label-free and model-agnostic）的故障检测框架——PFD (Perturbation-Based Failure Detection)。 [1, 2, 3]
+- 核心方法：通过向选定的 Transformer 权重矩阵中注入随机低秩扰动（random low-rank perturbations），并根据不同扰动动作预测之间的分歧（disagreement）来估计认知不确定性（epistemic uncertainty）。 [1]
+- 运行机制：扰动变体仅用于不确定性估计，而实际在环境中执行的动作仍由未受扰动的基准策略预测。同时引入了时间聚合（temporal aggregation）机制来捕获策略执行期间持续的不确定性模式。 [1]
+- 实验表现：在 LIBERO-PRO 等基准测试和真实世界机器人实验中，该方法在应对分布偏移（distribution shift）和未见过的物体偏移时，展现出了优秀的故障检测性能和较高的 AUROC 指标。
+
+Behavior Uncloning
+用于将不期望的行为从任务权重中蒸馏出去，一种反向蒸馏。
+训练一个临时模式分类器-用分类器信号引导反向蒸馏-部署时直接部署，不需要分类器。
+Where Memory Belongs: LEDGER, an Object
+Ledger for Memory-Augmented VLAs
+VLARL
+2025 年 VLA-RL: Towards Masterful and General Robotic Manipulation with Scalable Reinforcement Learning（arXiv:2505.18719）。它要解决的是预训练视觉语言动作策略只模仿有限示范，遇到没见过的状态就会失败。做法是在下游任务上用在线强化学习继续训练自回归策略，并把一条操作轨迹写成多轮对话，在整条轨迹层面计算回报。稀疏的任务奖励不够用，所以他们再微调一个视觉语言模型，给自动切出的任务片段打过程分。论文在 LIBERO 的任务上训练 OpenVLA-7B。
+VLA-Adapter 
